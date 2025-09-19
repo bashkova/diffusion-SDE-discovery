@@ -19,8 +19,7 @@ The core of this project is to analyze time-series data from a **trained Schröd
 The SDE governing this process can be represented as:
 
 $$d\mathbf{z}_t = \text{pred}(\mathbf{z}_t) \, dt + \sigma \, d\mathbf{W}_t$$, where 
-* $\mathbf{z}_t$ is the state vector at time $t$.
-* $\text{pred}(\mathbf{z}_t)$ is the network drift term, which is the model's prediction.
+* $\mathbf{z}_t$ is the state vector at time $t$, $\text{pred}(\mathbf{z}_t)$ is the network drift term, which is the model's prediction.
 * $dt$ is the time step.
 * $\sigma$ is the noise level.
 * $d\mathbf{W}_t$ is the Wiener process, representing the stochastic noise.
