@@ -107,7 +107,7 @@ def epde_multisample_discovery(t_ax, variables, diff_method: str = 'poly', find_
         epde_search_obj.set_preprocessor(default_preprocessor_type='poly',
                                          preprocessor_kwargs={'use_smoothing': True, 'sigma': 1,
                                                               'polynomial_window': 7, 'poly_order': 4})
-    epde_search_obj.set_moeadd_params(population_size=15, training_epochs=50)
+    epde_search_obj.set_moeadd_params(population_size=8, training_epochs=3)
     variable_names = [f'u{i}' for i in range(len(variables))]
 
     if not find_simple_eqs:
@@ -134,7 +134,7 @@ def epde_multisample_discovery(t_ax, variables, diff_method: str = 'poly', find_
 
 def run_discovery_and_save(t_axis, x_vars, is_simple_search: bool, output_dir: Path):
     """
-    Runs the EPDE discovery for a specific search type and saves the results.
+     EPDE discovery for a specific search type
     """
     if is_simple_search:
         logger.info("\n--- Running Simple Equations Search ---")
@@ -149,27 +149,18 @@ def run_discovery_and_save(t_axis, x_vars, is_simple_search: bool, output_dir: P
         t_axis, x_vars, diff_method='poly', find_simple_eqs=is_simple_search
     )
 
-    results = epde_result.equations()
+    results = epde_result.equations(False)
     num_vars = len(x_vars)
     variable_names = [f'u{i}' for i in range(num_vars)]
 
-    if results:
-        logger.info("Equations found. Processing for saving.")
-        processor = EquationProcessor()
-        table_main, k = processor.object_table(results, variable_names)
+    logger.info("Equations found. Processing for saving.")
+    processor = EquationProcessor()
+    table_main, k = processor.object_table(results, variable_names)
 
-        if k == 0:
-            equations_df = processor.preprocessing_table(variable_names, table_main, k)
+    equations_df = processor.preprocessing_table(variable_names, table_main, k)
 
-            try:
-                equations_df.to_csv(output_path, sep=',', encoding='utf-8', index=False)
-                logger.info(f"Equations successfully saved to: {output_path}")
-            except IOError as e:
-                logger.error(f"Failed to write to file {output_path}. Check permissions. Error: {e}")
-        else:
-            logger.warning("Processing resulted in an empty table. No file created.")
-    else:
-        logger.warning("No equations were found. The output file will not be created.")
+    equations_df.to_csv(output_path, sep=',', encoding='utf-8', index=False)
+    logger.info(f"Equations successfully saved to: {output_path}")
 
 
 if __name__ == "__main__":
@@ -192,7 +183,6 @@ if __name__ == "__main__":
 
         # Запуск
         run_discovery_and_save(t_axis, x_vars, is_simple_search=True, output_dir=output_dir)
-
 
     except FileNotFoundError:
         logger.error(f"Data file not found at: {file_path / 'trajectories-2'}")
