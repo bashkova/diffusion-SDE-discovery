@@ -72,6 +72,7 @@ class EquationProcessor:
     def object_table(self, res: List, variable_names: List[str],
                      table_main: List[Dict], k: int, title: str) -> Tuple[List[Dict], int]:
         """CREATING OBJECT FOR TABLES"""
+
         def filter_func(*args, **kwargs):
             return True
 
@@ -120,6 +121,7 @@ class EquationProcessor:
 
 
 def epde_multisample_discovery(t_ax, variables, diff_method: str = 'poly', find_simple_eqs: bool = False):
+    """Executes the EPDE multisample discovery process."""
     samples = [[t_ax[i], [var[i] for var in variables]] for i in range(len(t_ax))]
     epde_search_obj = epde.EpdeMultisample(data_samples=samples, use_solver=False, boundary=0,
                                            verbose_params={'show_iter_idx': True})
@@ -174,21 +176,23 @@ def run_discovery_and_save(t_axis, x_vars, is_simple_search: bool, output_dir: P
     results = epde_result.equations(False)
     print(results)
 
+    #checking
+
     if not results:
-        logger.warning("no valid equations were discovered")
+        logger.warning("No valid equations were discovered by EPDE")
         return
 
-    logger.info("equations found")
+    logger.info("Equations found. Processing for saving.")
 
     valid_results = [res_list for res_list in results if res_list]
     if not valid_results:
-        logger.warning("equation results were empty after filtering")
+        logger.warning("Equation results were empty after filtering. Skipping file save.")
         return
 
 
     num_vars = len(x_vars)
     variable_names = [f'u{i}' for i in range(num_vars)]
-    logger.info("equations found")
+    logger.info("Equations found. Processing for saving.")
     processor = EquationProcessor()
 
 
@@ -219,11 +223,9 @@ if __name__ == "__main__":
         x_vars = [[traj[:, i] for traj in trajectories] for i in range(num_vars)]
 
         # Запуск
-        run_discovery_and_save(t_axis, x_vars, is_simple_search=True, output_dir=output_dir) #для нелинейных  is_simple_search=False
+        run_discovery_and_save(t_axis, x_vars, is_simple_search=True, output_dir=output_dir)
 
     except FileNotFoundError:
         logger.error(f"Data file not found at: {file_path / 'trajectories-2'}")
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
-
-
