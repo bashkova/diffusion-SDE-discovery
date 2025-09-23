@@ -121,7 +121,6 @@ class EquationProcessor:
 
 
 def epde_multisample_discovery(t_ax, variables, diff_method: str = 'poly', find_simple_eqs: bool = False):
-    """Executes the EPDE multisample discovery process."""
     samples = [[t_ax[i], [var[i] for var in variables]] for i in range(len(t_ax))]
     epde_search_obj = epde.EpdeMultisample(data_samples=samples, use_solver=False, boundary=0,
                                            verbose_params={'show_iter_idx': True})
@@ -157,9 +156,6 @@ def epde_multisample_discovery(t_ax, variables, diff_method: str = 'poly', find_
 
 
 def run_discovery_and_save(t_axis, x_vars, is_simple_search: bool, output_dir: Path):
-    """
-     EPDE discovery for a specific search type
-    """
     if is_simple_search:
         logger.info("\n--- Running Simple Equations Search ---")
         csv_filename = 'discovered_equations_simple.csv'
@@ -177,7 +173,6 @@ def run_discovery_and_save(t_axis, x_vars, is_simple_search: bool, output_dir: P
     print(results)
 
     #checking
-
     if not results:
         logger.warning("No valid equations were discovered by EPDE")
         return
@@ -223,9 +218,10 @@ if __name__ == "__main__":
         x_vars = [[traj[:, i] for traj in trajectories] for i in range(num_vars)]
 
         # Запуск
-        run_discovery_and_save(t_axis, x_vars, is_simple_search=True, output_dir=output_dir)
+        run_discovery_and_save(t_axis, x_vars, is_simple_search=True, output_dir=output_dir) #для нелинейных is_simple_search=False
 
     except FileNotFoundError:
         logger.error(f"Data file not found at: {file_path / 'trajectories-2'}")
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
+
