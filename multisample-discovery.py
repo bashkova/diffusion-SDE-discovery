@@ -126,12 +126,12 @@ def epde_multisample_discovery(t_ax, variables, diff_method: str = 'poly', find_
     epde_search_obj = epde.EpdeMultisample(data_samples=samples, use_solver=False, boundary=0,
                                            verbose_params={'show_iter_idx': True})
     if diff_method == 'ANN':
-        epde_search_obj.set_preprocessor(default_preprocessor_type='ANN', preprocessor_kwargs={'epochs_max': 1})
+        epde_search_obj.set_preprocessor(default_preprocessor_type='ANN', preprocessor_kwargs={'epochs_max': 30})
     else:
         epde_search_obj.set_preprocessor(default_preprocessor_type='poly',
                                          preprocessor_kwargs={'use_smoothing': True, 'sigma': 1,
                                                               'polynomial_window': 7, 'poly_order': 4})
-    epde_search_obj.set_moeadd_params(population_size=8, training_epochs=1)
+    epde_search_obj.set_moeadd_params(population_size=8, training_epochs=30)
     variable_names = [f'u{i}' for i in range(len(variables))]
 
     if not find_simple_eqs:
@@ -227,3 +227,4 @@ if __name__ == "__main__":
         logger.error(f"Data file not found at: {file_path / 'trajectories-2'}")
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
+
