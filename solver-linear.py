@@ -233,6 +233,8 @@ def main():
         if len(all_solutions) > 1:
             logger.info("averaging solutions from systems")
             avg_solution = average_solutions(all_solutions)
+            if avg_solution is not None:
+                solution_manager.save_array(avg_solution, f"{output_filename_base}_averaged")
 
 
 if __name__ == "__main__":
